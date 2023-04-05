@@ -44,7 +44,9 @@ namespace Unity.Networking.Transport
         /// <summary>
         /// The max size of any packet that can be sent
         /// </summary>
-        public const int MTU = 1400;
+        public const int MTU = 1300; // OOI_CC - The default is 1400, but this wouldn't work on NordVPN. After talking to some Unity reps on Discord, the solution
+                                     //          arrived at was to lower this value. Testing confirmed this worked. It does mean we have slightly worse bandwidth
+                                     //          use now, but it seems there's not really a solid number to choose that fits all scenarios.
     }
 
     /// <summary>
