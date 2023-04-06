@@ -702,6 +702,10 @@ namespace Unity.Networking.Transport
             };
         }
 
+#region OOI_CC
+        private static int s_MaxHandlesUsed;
+#endregion
+
         [BurstCompile(DisableDirectCall = true)]
         [AOT.MonoPInvokeCallback(typeof(NetworkSendInterface.BeginSendMessageDelegate))]
         private static unsafe int BeginSendMessage(out NetworkInterfaceSendHandle handle, IntPtr userData, int requiredPayloadSize)
@@ -709,6 +713,15 @@ namespace Unity.Networking.Transport
             var baselib = (BaselibData*)userData;
             handle = default;
             int index = baselib->m_PayloadsTx.AcquireHandle();
+            
+#region OOI_CC
+            if (baselib->m_PayloadsTx.InUse > s_MaxHandlesUsed)
+            {
+                UnityEngine.Debug.Log($"[OOI Debug] Max handles used increased to {baselib->m_PayloadsTx.InUse}/{baselib->m_PayloadsTx.Capacity}");
+                s_MaxHandlesUsed = baselib->m_PayloadsTx.InUse;
+            }
+#endregion
+            
             if (index < 0)
                 return (int)Error.StatusCode.NetworkSendQueueFull;
 
