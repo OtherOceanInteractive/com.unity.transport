@@ -62,8 +62,8 @@ namespace Unity.Networking.Transport
         /// <summary>
         /// Initializes the interface passing in optional <see cref="INetworkParameter"/>
         /// </summary>
-        /// <param name="param">The param</param>
-        /// <returns>The status code of the result, 0 being a success.</returns>
+        /// <param name="settings"><see cref="NetworkSettings"/> with which to configure the interface.</param>
+        /// <returns>Returns 0 on success.</returns>
         public int Initialize(NetworkSettings settings)
         {
             IPCManager.Instance.AddRef();
@@ -128,7 +128,7 @@ namespace Unity.Networking.Transport
                         return;
                     }
 
-                    var resultAppend = receiver.AppendPacket(ptr, ref endpoint, resultReceive);
+                    var resultAppend = receiver.AppendPacket(ptr, ref endpoint, resultReceive, NetworkPacketReceiver.AppendPacketMode.NoCopyNeeded);
                     if (resultAppend == false)
                         return;
                 }
