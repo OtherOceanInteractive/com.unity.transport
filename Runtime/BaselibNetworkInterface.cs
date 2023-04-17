@@ -747,7 +747,7 @@ namespace Unity.Networking.Transport
                 messagePtr,
                 1u,
                 &error);
-            if (error.code != ErrorCode.Success)
+            if (error.code != ErrorCode.Success || count != 1u)
             {
                 baselib->m_PayloadsTx.ReleaseHandle(index);
                 return (int)error.code == -1 ? -1 : -(int)error.code;
