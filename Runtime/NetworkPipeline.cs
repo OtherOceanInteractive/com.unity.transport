@@ -394,7 +394,9 @@ namespace Unity.Networking.Transport
         /// <summary>
         /// Sets the <see cref="NetworkPipelineParams"/> values for the <see cref="NetworkSettings"/>
         /// </summary>
+        /// <param name="settings"><see cref="NetworkSettings"/> to modify.</param>
         /// <param name="initialCapacity"><seealso cref="NetworkPipelineParams.initialCapacity"/></param>
+        /// <returns>Modified <see cref="NetworkSettings"/>.</returns>
         [Obsolete("Will be removed in Unity Transport 2.0.")]
         public static ref NetworkSettings WithPipelineParameters(
             ref this NetworkSettings settings,
@@ -414,6 +416,7 @@ namespace Unity.Networking.Transport
         /// <summary>
         /// Gets the <see cref="NetworkPipelineParams"/>
         /// </summary>
+        /// <param name="settings"><see cref="NetworkSettings"/> to get parameters from.</param>
         /// <returns>Returns the <see cref="NetworkPipelineParams"/> values for the <see cref="NetworkSettings"/></returns>
         public static NetworkPipelineParams GetPipelineParameters(ref this NetworkSettings settings)
         {
@@ -438,6 +441,8 @@ namespace Unity.Networking.Transport
         /// </summary>
         public int initialCapacity;
 
+        /// <summary>Validate the settings.</summary>
+        /// <returns>True if the settings are valid, false otherwise.</returns>
         public bool Validate()
         {
             var valid = true;
@@ -533,11 +538,11 @@ namespace Unity.Networking.Transport
                 {
 #if ENABLE_UNITY_COLLECTIONS_CHECKS
                     UnityEngine.Debug.LogError("The parallel network driver needs to process a single unique connection per job, processing a single connection multiple times in a parallel for is not supported.");
-                    return (int)Error.StatusCode.NetworkDriverParallelForErr;
-#else
-                    return (int)Error.StatusCode.NetworkDriverParallelForErr;
 #endif
+                    driver.AbortSend(sendHandle);
+                    return (int)Error.StatusCode.NetworkDriverParallelForErr;
                 }
+
                 NativeList<UpdatePipeline> currentUpdates = new NativeList<UpdatePipeline>(128, Allocator.Temp);
 
                 int retval = ProcessPipelineSend(driver, 0, pipeline, connection, sendHandle, headerSize, currentUpdates);

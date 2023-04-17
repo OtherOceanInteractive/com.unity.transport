@@ -1,5 +1,26 @@
 # Change log
 
+## [1.3.3] - 2023-03-17
+
+### Fixes
+* Fixed an issue where calling `ScheduleFlushSend` before the socket was bound would still result in socket system calls being made, resulting in errors being logged.
+
+## [1.3.2] - 2023-03-09
+
+### Fixes
+* Fixed issue where UWP Xbox builds were crashing because the split buffer fix was not including UWP defines.
+* Fixed an issue where `IPCNetworkInterface` would perform useless work for each packet received.
+* Fixed an issue where `ReliableSequencedPipelineStage` could end up duplicating packets when sending reliable packets while the send queue is full.
+
+## [1.3.1] - 2022-12-09
+
+### Changes
+* It is now possible to set a window size of up to 64 for `ReliableSequencedPipelineStage` (use `NetworkSettings.WithReliableStageParameters` to modify the value). Doing so increases the packet header size by 4 bytes though, so the default value remains at 32.
+
+### Fixes
+* Fixed an issue where if one end of a reliable pipeline stopped sending any traffic and its latest ACK message was lost, then the other end would stall.
+* Fixed a crash when using DTLS if an update was delayed for long enough that both the disconnection and heartbeat timeouts expire.
+
 ## [1.3.0] - 2022-09-27
 
 ### New features
