@@ -722,13 +722,6 @@ namespace Unity.Networking.Transport
             handle = default;
             int index = baselib->m_PayloadsTx.AcquireHandle();
             
-#region OOI_CC
-            if (baselib->m_PayloadsTx.InUse > 100)
-            {
-                UnityEngine.Debug.Log($"[OOI Debug] Max handles used: {baselib->m_PayloadsTx.InUse}/{baselib->m_PayloadsTx.Capacity}");
-            }
-#endregion
-            
             if (index < 0)
                 return (int)Error.StatusCode.NetworkSendQueueFull;
 
@@ -767,7 +760,7 @@ namespace Unity.Networking.Transport
                 messagePtr,
                 1u,
                 &error);
-            if (error.code != ErrorCode.Success)
+            if (error.code != ErrorCode.Success || count != 1u)
             {
                 baselib->m_PayloadsTx.ReleaseHandle(index);
                 return (int)error.code == -1 ? -1 : -(int)error.code;
